@@ -1,7 +1,3 @@
-'''
-This module contains methods for training models with different loss functions.
-'''
-
 import torch
 from torch.nn import functional as F
 from torch import nn
@@ -25,9 +21,9 @@ def train_single_epoch(
 
     for batch_idx, (data, labels) in enumerate(train_loader):
 
-        # move data and labels to device
-        data = data.to(device)
-        labels = labels.to(device)
+        # move data, labels and model to device
+        data, labels = data.to(device), labels.to(device)
+        model.to(device)
 
         # zero the parameter gradients
         optimizer.zero_grad()

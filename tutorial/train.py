@@ -40,8 +40,8 @@ models = {
 }
 
 optimizers = {
-    'sgd': optim.SGD,
-    'adam': optim.Adam,
+    'sgd': sgd,
+    'adam': adam,
 }
 
 losses = {
@@ -214,7 +214,7 @@ def main(args):
     )
 
     # loss function
-    loss_function = losses[args.loss_function]
+    loss_function = losses[args.loss_function]()
 
     # Train!
     best_test_acc = 0
@@ -233,12 +233,14 @@ def main(args):
             best_test_acc = test_acc
             print(f'New best accuracy: {best_test_acc:.2f}%')
             save_dir = os.path.join(args.save_loc, 'best_models')
+            os.makedirs(save_dir, exist_ok=True)
             save_name = args.model + '_' + args.loss_function + str(epoch + 1) + '.model'
             torch.save(net.state_dict(), os.path.join(save_dir, save_name))
 
         # save checkpoint every save_interval epochs
         if (epoch + 1) % args.save_interval == 0:
             save_dir = os.path.join(args.save_loc, 'checkpoints')
+            os.makedirs(save_dir, exist_ok=True)
             save_name = args.model + '_' + args.loss_function + str(epoch + 1) + '.model'
             torch.save(net.state_dict(), os.path.join(save_dir, save_name))
 
