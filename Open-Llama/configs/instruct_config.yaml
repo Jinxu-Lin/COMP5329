@@ -1,0 +1,32 @@
+data:
+  mode: "instruct"
+  data: 
+    mixed: "data/instruction_data/part-*.jsonl.zst"
+  pad_to_max: False
+  sequence_sample_mode: "none"
+  concat_multiple_sequence: True
+  num_sequences: 50
+  seq_length: 2048
+  tokenizer_model_path: "configs/tokenizer_models/llama_tokenizer_extended.model"
+  split_by_shard: False
+train:
+  train_batch_size: 2
+  # 1B token for 1 epoch, 5epoch
+  num_training_steps: 20000
+  num_warmup_steps: 500
+  initializer_range: 1.0e-2
+  lr: 2.0e-4
+  weight_decay: 1.0e-1
+  ckpt: "data/saved_model/ckpt.pth"
+  train_num_workers: 16
+  gradient_accumulation_steps: 1
+  prefetch_factor: 100
+  train_and_eval: False
+  gradient_checkpointing_enable: False
+  use_lora: False
+# global step
+log_interval: 50
+eval_interval: 500
+save_interval: 1000
+work_dir: "data/saved_ckpt/7B_instruction"
+project_name: "Llama Instruction"
