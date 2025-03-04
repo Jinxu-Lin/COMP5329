@@ -1,10 +1,3 @@
-"""
-Create train, valid, test iterators for CIFAR-10.
-Train set size: 45000
-Val set size: 5000
-Test set size: 10000
-"""
-
 import torch
 import numpy as np
 
