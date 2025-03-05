@@ -1,8 +1,6 @@
 import torch
-from torch.optim.optimizer import Optimizer
 
-
-class SGD(Optimizer):
+class SGD():
     def __init__(self, opt_params, args):
         """
         A custom implementation of SGD with PyTorch-compatible param_groups.
