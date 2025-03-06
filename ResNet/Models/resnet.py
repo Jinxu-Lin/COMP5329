@@ -4,6 +4,7 @@ import torch.nn.functional as F
 
 from mlp import MLP
 from cnn import Conv2d
+
 class BasicBlock(nn.Module):
     expansion = 1
 
