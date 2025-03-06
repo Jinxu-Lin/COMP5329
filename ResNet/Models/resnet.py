@@ -4,6 +4,7 @@ import torch.nn.functional as F
 
 from mlp import MLP
 from cnn import Conv2d
+from dropout import Dropout
 from batch_normalization import BatchNorm2d
 
 class BasicBlock(nn.Module):
@@ -16,6 +17,8 @@ class BasicBlock(nn.Module):
         self.conv2 = Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = BatchNorm2d(planes)
 
+        self.dropout = Dropout(p=0.2)
+
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
@@ -25,9 +28,11 @@ class BasicBlock(nn.Module):
 
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
+        out = self.dropout(out)
         out = self.bn2(self.conv2(out))
         out += self.shortcut(x)
         out = F.relu(out)
+        out = self.dropout(out)
         return out
 
 
@@ -43,6 +48,8 @@ class Bottleneck(nn.Module):
         self.conv3 = Conv2d(planes, self.expansion*planes, kernel_size=1, bias=False)
         self.bn3 = BatchNorm2d(self.expansion*planes)
 
+        self.dropout = Dropout(p=0.2)
+
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
@@ -52,10 +59,13 @@ class Bottleneck(nn.Module):
 
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
+        out = self.dropout(out)
         out = F.relu(self.bn2(self.conv2(out)))
+        out = self.dropout(out)
         out = self.bn3(self.conv3(out))
         out += self.shortcut(x)
         out = F.relu(out)
+        out = self.dropout(out)
         return out
 
 
@@ -73,6 +83,8 @@ class ResNet(nn.Module):
         self.fc = MLP(512*block.expansion, num_classes)
         self.temp = temp
 
+        self.dropout = Dropout(p=0.2)
+
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
         layers = []
@@ -83,6 +95,7 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
+        out = self.dropout(out)
         out = self.layer1(out)
         out = self.layer2(out)
         out = self.layer3(out)
